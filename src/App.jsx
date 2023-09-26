@@ -1,66 +1,86 @@
 import React, { useState, useEffect } from "react";
-import { Howl } from "howler";
+import "./App.css";
+import Toggle from "./components/Toggle";
+
+const keyToAudioMap = [
+  { key: "Q", path: "/Heater-1.mp3", sound: "Heater-1" },
+  { key: "W", path: "/Heater-2.mp3", sound: "Heater-2" },
+  { key: "E", path: "/Heater-3.mp3", sound: "Heater-3" },
+  { key: "A", path: "/Heater-4_1.mp3", sound: "Heater-4_1" },
+  { key: "S", path: "/Heater-6.mp3", sound: "Heater-6" },
+  { key: "D", path: "/Dsc_Oh.mp3", sound: "Dsc_Oh" },
+  { key: "Z", path: "/Kick_n_Hat.mp3", sound: "Kick_n_Hat" },
+  { key: "X", path: "/RP4_KICK_1.mp3", sound: "RP4_KICK_1" },
+  { key: "C", path: "/Cev_H2.mp3", sound: "Cev_H2" },
+];
 
 function App() {
-  // Definir un objeto que mapea las teclas a los archivos de audio
-  const keyToAudioMap = {
-    Q: "/Heater-1.mp3",
-    W: "/Heater-2.mp3",
-    E: "/Heater-3.mp3",
-    A: "/Heater-4_1.mp3",
-    S: "/Heater-6.mp3",
-    D: "/Dsc_Oh.mp3",
-    Z: "/Kick_n_Hat.mp3",
-    X: "/RP4_KICK_1.mp3",
-    C: "/Cev_H2.mp3",
+  const [isToggled, setToggled] = useState(true);
+  const [displayText, setDisplayText] = useState("PRESS A KEY");
+
+  const handleToggle = () => {
+    setToggled(!isToggled);
   };
 
-  // Estado local para el audio actual
-  const [currentAudio, setCurrentAudio] = useState(null);
-
-  const playAudio = (audioSrc) => {
-    if (currentAudio) {
-      currentAudio.stop();
+  const playAudio = (keyToAudio) => {
+    if (!isToggled) return;
+    const audioElement = document.getElementById(keyToAudio.key);
+    if (audioElement) {
+      audioElement.currentTime = 0;
+      audioElement.play();
+      setDisplayText(keyToAudio.sound);
     }
-
-    const audio = new Howl({ src: [audioSrc] });
-    audio.play();
-    setCurrentAudio(audio);
   };
 
   const handleKeyPress = (event) => {
     const key = event.key.toUpperCase();
-    if (keyToAudioMap[key]) {
-      playAudio(keyToAudioMap[key]);
+    const foundedKey = keyToAudioMap.find((e) => e.key === key);
+    if (foundedKey) {
+      playAudio(foundedKey);
     }
   };
 
   useEffect(() => {
-    // Agregar un controlador de eventos para las teclas
+    if (!isToggled) setDisplayText("----------");
+    else setDisplayText("PRESS A KEY");
+  }, [isToggled]);
+
+  useEffect(() => {
     document.addEventListener("keydown", handleKeyPress);
 
-    // Limpiar el controlador de eventos al desmontar el componente
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
   }, []);
 
   return (
-    <div>
-      <div>
-        <button onClick={() => playAudio(keyToAudioMap["Q"])}>Q</button>
-        <button onClick={() => playAudio(keyToAudioMap["W"])}>W</button>
-        <button onClick={() => playAudio(keyToAudioMap["E"])}>E</button>
+    <div id="drum-machine">
+      <div id="drum-pads">
+        {keyToAudioMap.map((keyToAudio) => (
+          <button
+            id={keyToAudio.path}
+            key={keyToAudio.key}
+            className={`drum-pad ${isToggled ? "" : "disabled"}`}
+            onClick={() => playAudio(keyToAudio)}
+            disabled={!isToggled}
+          >
+            {keyToAudio.key}
+            <audio
+              id={keyToAudio.key}
+              src={keyToAudio.path}
+              className="clip"
+              preload="auto"
+              autoPlay={false}
+            />
+          </button>
+        ))}
       </div>
-      <div>
-        <button onClick={() => playAudio(keyToAudioMap["A"])}>A</button>
-        <button onClick={() => playAudio(keyToAudioMap["S"])}>S</button>
-        <button onClick={() => playAudio(keyToAudioMap["D"])}>D</button>
-      </div>
-      <div>
-        <button onClick={() => playAudio(keyToAudioMap["Z"])}>Z</button>
-        <button onClick={() => playAudio(keyToAudioMap["X"])}>X</button>
-        <button onClick={() => playAudio(keyToAudioMap["C"])}>C</button>
+      <div id="controls-container">
+        <div id="power">
+          <p>POWER</p>
+          <Toggle isToggled={isToggled} handleToggle={handleToggle} />
+        </div>
+        <div id="display">{displayText}</div>
       </div>
     </div>
   );

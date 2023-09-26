@@ -5,38 +5,61 @@
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+body {
+  background-color: #776871;
+  height: 100vh;
+  width: 100%;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#drum-machine {
+  padding: 80px;
+  border-radius: 16px;
+  background-color: #91a8a4;
+  width: auto;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.drum-pad {
+  background-color: #afdedc;
+  border: solid 1px #776871;
+  margin: 4px;
+  font: 16px "Russo One";
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  box-sizing: border-box;
+  box-shadow: #776871 3px 3px 4px;
+  grid-column: span 1 / span 1;
+}
+.clip {
+  display: "none";
+}
+#drum-pads {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  grid-column-gap: 8px;
+  grid-row-gap: 8px;
 }
 
-.card {
-  padding: 2em;
+#controls-container {
+  border-radius: 24px;
+  margin-top: 50px;
+  border: solid 1px #776871;
+  padding: 10px;
 }
 
-.read-the-docs {
-  color: #888;
+#power {
+  color: black;
+  font-weight: bold;
+}
+
+#display {
+  text-align: center;
+  color: #c4d7f2;
+  background-color: #776871;
+  width: auto;
+  margin: 10px auto;
+  display: inline-block;
+  padding: 8px;
+  border-radius: 4px;
 }
